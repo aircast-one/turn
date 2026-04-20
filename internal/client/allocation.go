@@ -162,7 +162,8 @@ func (a *allocation) onRefreshTimers(id int) {
 			}
 		}
 		if err != nil {
-			a.log.Warnf("Failed to refresh permissions: %s", err)
+			a.log.Warnf("Failed to refresh permissions: %s — resetting to idle for re-creation", err)
+			a.permMap.resetAllToIdle()
 		}
 	}
 }

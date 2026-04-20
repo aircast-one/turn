@@ -73,6 +73,18 @@ func (m *permissionMap) addrs() []net.Addr {
 	return addrs
 }
 
+// resetAllToIdle resets all permissions to permStateIdle, forcing the next
+// WriteTo to re-create them via CreatePermission. Called when the periodic
+// permission refresh fails to prevent silent packet loss.
+func (m *permissionMap) resetAllToIdle() {
+	m.mutex.RLock()
+	defer m.mutex.RUnlock()
+
+	for _, p := range m.permMap {
+		p.setState(permStateIdle)
+	}
+}
+
 func newPermissionMap() *permissionMap {
 	return &permissionMap{
 		permMap: map[string]*permission{},
